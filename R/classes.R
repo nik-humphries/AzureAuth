@@ -284,6 +284,47 @@ private=list(
     }
 ))
 
+AzureTokenWorkload <- R6::R6Class("AzureTokenWorkload", inherit=AzureToken,
+                                  
+                                  public=list(
+                                    
+                                    initialize=function(common_args, oidc_token_path)
+                                    {
+                                      self$auth_type <- "workload_identity"
+                                      with(common_args,
+                                           private$set_request_credentials(app, password, oidc_token_path))
+                                      do.call(super$initialize, common_args)
+                                    }
+                                  ),
+                                  
+                                  private=list(
+                                    
+                                    initfunc=function(init_args)
+                                    {
+                                      # Obtain injected oidc_token from secrets path and use this to obtain 
+                                      # access token for given resource
+                                      oidc_token <- readLines(oidc_token_path, warn = FALSE)
+                                      uri <- private$aad_uri("token")
+                                      body = list(
+                                        client_id = client_id,
+                                        scope = resource,
+                                        grant_type = "client_credentials",
+                                        client_assertion_type = "urn:ietf:params:oauth:client-assertion-type:jwt-bearer",
+                                        client_assertion = oidc_token
+                                      )
+                                      
+                                      httr::POST(uri, body=body, encode="form")
+                                    },
+                                    
+                                    set_request_credentials=function(app, password, oidc_token)
+                                    {
+                                      object <- list(client_id=app, grant_type="client_credentials")
+                                      
+                                      self$client <- object
+                                    }
+                                  ))
+
+
 
 norenew_alert <- function(version)
 {
