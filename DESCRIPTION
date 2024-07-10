@@ -1,6 +1,6 @@
 Package: AzureAuth
 Title: Authentication Services for Azure Active Directory
-Version: 1.4.0
+Version: 1.4.1
 Authors@R: c(
     person("Hong", "Ooi", , "hongooi73@gmail.com", role = c("aut", "cre")),
     person("Tyler", "Littlefield", role="ctb"),
@@ -34,4 +34,4 @@ Suggests:
     AzureRMR,
     AzureGraph
 Roxygen: list(markdown=TRUE, r6=FALSE)
-RoxygenNote: 7.1.1
+RoxygenNote: 7.3.1
