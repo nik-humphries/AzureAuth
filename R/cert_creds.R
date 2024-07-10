@@ -32,26 +32,25 @@ cert_assertion <- function(certificate, duration=3600, signature_size=256, ...)
               class="cert_assertion")
 }
 
-
 build_assertion <- function(assertion, ...)
 {
     UseMethod("build_assertion")
 }
 
-
+#' @export 
 build_assertion.stored_cert <- function(assertion, ...)
 {
     build_assertion(cert_assertion(assertion), ...)
 }
 
-
+#' @export
 build_assertion.character <- function(assertion, ...)
 {
     pair <- read_cert_pair(assertion)
     build_assertion(cert_assertion(pair), ...)
 }
 
-
+#' @export
 build_assertion.cert_assertion <- function(assertion, tenant, app, aad_host, version)
 {
     url <- httr::parse_url(aad_host)
@@ -71,7 +70,7 @@ build_assertion.cert_assertion <- function(assertion, tenant, app, aad_host, ver
     sign_assertion(assertion$cert, claim, assertion$size)
 }
 
-
+#' @export
 build_assertion.default <- function(assertion, ...)
 {
     if(is.null(assertion))
@@ -85,7 +84,7 @@ sign_assertion <- function(certificate, claim, size)
     UseMethod("sign_assertion")
 }
 
-
+#' @export
 sign_assertion.stored_cert <- function(certificate, claim, size)
 {
     kty <- certificate$policy$key_props$kty  # key type determines signing alg
@@ -99,7 +98,7 @@ sign_assertion.stored_cert <- function(certificate, claim, size)
     paste(token_conts, certificate$sign(openssl::sha2(charToRaw(token_conts), size=size), alg), sep=".")
 }
 
-
+#' @export
 sign_assertion.openssl_cert_pair <- function(certificate, claim, size)
 {
     alg <- if(inherits(certificate$key, "rsa"))
@@ -114,7 +113,7 @@ sign_assertion.openssl_cert_pair <- function(certificate, claim, size)
     jose::jwt_encode_sig(claim, certificate$key, size=size, header=header)
 }
 
-
+#' @export
 sign_assertion.character <- function(certificate, claim, size)
 {
     pair <- read_cert_pair(certificate)
