@@ -288,11 +288,11 @@ AzureTokenWorkload <- R6::R6Class("AzureTokenWorkload", inherit=AzureToken,
                                   
                                   public=list(
                                     
-                                    initialize=function(common_args, oidc_token_path)
+                                    initialize=function(common_args)
                                     {
                                       self$auth_type <- "workload_identity"
                                       with(common_args,
-                                           private$set_request_credentials(app, password, oidc_token_path))
+                                           private$set_request_credentials(app, password))
                                       do.call(super$initialize, common_args)
                                     }
                                   ),
@@ -303,11 +303,11 @@ AzureTokenWorkload <- R6::R6Class("AzureTokenWorkload", inherit=AzureToken,
                                     {
                                       # Obtain injected oidc_token from secrets path and use this to obtain 
                                       # access token for given resource
-                                      oidc_token <- readLines(oidc_token_path, warn = FALSE)
+                                      oidc_token <- readLines(self$token_args$oidc_token_path, warn = FALSE)
                                       uri <- private$aad_uri("token")
                                       body = list(
-                                        client_id = client_id,
-                                        scope = resource,
+                                        client_id = self$client$client_id,
+                                        scope = self$scope,
                                         grant_type = "client_credentials",
                                         client_assertion_type = "urn:ietf:params:oauth:client-assertion-type:jwt-bearer",
                                         client_assertion = oidc_token
@@ -316,7 +316,7 @@ AzureTokenWorkload <- R6::R6Class("AzureTokenWorkload", inherit=AzureToken,
                                       httr::POST(uri, body=body, encode="form")
                                     },
                                     
-                                    set_request_credentials=function(app, password, oidc_token)
+                                    set_request_credentials=function(app, password)
                                     {
                                       object <- list(client_id=app, grant_type="client_credentials")
                                       

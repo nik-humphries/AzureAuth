@@ -7,6 +7,11 @@ get_workload_token <- function(resource, tenant = Sys.getenv("AZURE_TENANT_ID"),
                                use_cache=NULL, on_behalf_of=NULL, auth_code=NULL, device_creds=NULL)
 {
   
+  # Stop if oidc_token_path doesn't exist
+  stopifnot(file.exists(oidc_token_path))
+  
+  token_args <- modifyList(token_args, list(oidc_token_path=oidc_token_path))
+  
   common_args <- list(
     resource=resource,
     tenant=tenant,
@@ -20,6 +25,6 @@ get_workload_token <- function(resource, tenant = Sys.getenv("AZURE_TENANT_ID"),
     use_cache=use_cache
   )
   
-  AzureTokenWorkload$new(common_args, oidc_token_path)
+  AzureTokenWorkload$new(common_args)
   
 }
