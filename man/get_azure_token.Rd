@@ -82,7 +82,8 @@ get_workload_token(
   resource,
   tenant = Sys.getenv("AZURE_TENANT_ID"),
   app = Sys.getenv("AZURE_CLIENT_ID"),
-  oidc_token_path = "/run/secrets/azure/tokens/azure-identity-token",
+  oidc_token_path = Sys.getenv("AZURE_FEDERATED_TOKEN_FILE", unset =
+    "/run/secrets/azure/tokens/azure-identity-token"),
   password = NULL,
   username = NULL,
   certificate = NULL,
@@ -134,7 +135,7 @@ get_workload_token(
 
 \item{object}{For \code{is_azure_token}, \code{is_azure_v1_token} and \code{is_azure_v2_token}, an R object.}
 
-\item{oidc_token_path}{Path to the workload identity injected OIDC token, defaults to "/run/secrets/azure/tokens/azure-identity-token" for aks}
+\item{oidc_token_path}{Path to the workload identity injected OIDC token, defaults to Sys.getenv("AZURE_FEDERATED_TOKEN_FILE", unset = "/run/secrets/azure/tokens/azure-identity-token") for aks}
 }
 \description{
 Use these functions to authenticate with Azure Active Directory (AAD).
