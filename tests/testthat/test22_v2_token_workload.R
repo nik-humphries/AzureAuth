@@ -1,6 +1,6 @@
 test_that("Check workload identity token works", {
   
-  oidc_token_path <- "/run/secrets/azure/tokens/azure-identity-token"
+  oidc_token_path <- Sys.getenv("AZURE_FEDERATED_TOKEN_FILE", unset = "/run/secrets/azure/tokens/azure-identity-token")
   skip_if(!file.exists(oidc_token_path))
   
   oidc_token <- readLines(oidc_token_path, warn = FALSE)
@@ -20,7 +20,7 @@ test_that("Check workload identity token works", {
 
 test_that("Check workload identity token works (cache)", {
   
-  oidc_token_path <- "/run/secrets/azure/tokens/azure-identity-token"
+  oidc_token_path <- Sys.getenv("AZURE_FEDERATED_TOKEN_FILE", unset = "/run/secrets/azure/tokens/azure-identity-token")
   skip_if(!file.exists(oidc_token_path))
   
   oidc_token <- readLines(oidc_token_path, warn = FALSE)
