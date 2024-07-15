@@ -151,8 +151,8 @@ in_shiny <- function()
 #' @export
 workload_identity_present <- function() {
     if (Sys.getenv("AZURE_TENANT_ID") != "" && Sys.getenv("AZURE_CLIENT_ID") != "" && Sys.getenv("AZURE_FEDERATED_TOKEN_FILE") != "" && file.exists(Sys.getenv("AZURE_FEDERATED_TOKEN_FILE"))) {
-        return(FALSE)
-    } else {
         return(TRUE)
+    } else {
+        return(FALSE)
     }
 }
